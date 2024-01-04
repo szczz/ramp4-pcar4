@@ -38,16 +38,21 @@ export default defineConfig(({ command, mode }) => {
                     name: 'RAMP',
                     fileName: (format: string) =>
                         `lib/ramp${format == 'iife' ? '' : '.esm'}.js`,
-                    formats: ['es', 'iife']
+                    formats: ['es']
                 },
                 rollupOptions: {
                     output: {
-                        inlineDynamicImports: true,
+                        inlineDynamicImports: false,
                         dir: distName,
                         assetFileNames: (assetInfo: any) => {
                             return assetInfo.name === 'style.css'
                                 ? 'lib/ramp.css'
                                 : assetInfo.name;
+                        },
+                        manualChunks(id: any) {
+                            if (id.includes('node_modules')) {
+                                return 'vendor';
+                            }
                         }
                     }
                 }
@@ -69,6 +74,13 @@ export default defineConfig(({ command, mode }) => {
                         teleport: '/index-teleport.html',
                         teleportWet: '/index-teleport-wet.html',
                         multiWet: '/index-multi-wet.html'
+                    },
+                    output: {
+                        manualChunks(id: any) {
+                            if (id.includes('node_modules')) {
+                                return 'vendor';
+                            }
+                        }
                     }
                 }
             });
