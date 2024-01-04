@@ -42,12 +42,16 @@ export default defineConfig(({ command, mode }) => {
                 },
                 rollupOptions: {
                     output: {
-                        inlineDynamicImports: true,
                         dir: distName,
                         assetFileNames: (assetInfo: any) => {
                             return assetInfo.name === 'style.css'
                                 ? 'lib/ramp.css'
                                 : assetInfo.name;
+                        },
+                        manualChunks(id: any) {
+                            if (id.includes('node_modules')) {
+                                return 'vendor';
+                            }
                         }
                     }
                 }
@@ -69,6 +73,13 @@ export default defineConfig(({ command, mode }) => {
                         teleport: '/index-teleport.html',
                         teleportWet: '/index-teleport-wet.html',
                         multiWet: '/index-multi-wet.html'
+                    },
+                    output: {
+                        manualChunks(id: any) {
+                            if (id.includes('node_modules')) {
+                                return 'vendor';
+                            }
+                        }
                     }
                 }
             });
