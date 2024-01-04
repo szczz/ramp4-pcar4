@@ -42,6 +42,7 @@ export default defineConfig(({ command, mode }) => {
                 },
                 rollupOptions: {
                     output: {
+                        inlineDynamicImports: false,
                         dir: distName,
                         assetFileNames: (assetInfo: any) => {
                             return assetInfo.name === 'style.css'
