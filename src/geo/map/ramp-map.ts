@@ -37,7 +37,7 @@ import type {
     Screenshot
 } from '@/geo/api';
 
-import { EsriMapView } from '@/geo/esri';
+import { EsriColorBackground, EsriMapView } from '@/geo/esri';
 import type { EsriGraphic, EsriLOD } from '@/geo/esri';
 
 import { useLayerStore } from '@/stores/layer';
@@ -45,6 +45,7 @@ import { MapCaptionAPI } from './caption';
 import { markRaw, toRaw } from 'vue';
 import { useConfigStore } from '@/stores/config';
 import { debounce, throttle } from 'throttle-debounce';
+import { useDetailsStore } from '@/fixtures/details/store';
 
 export class MapAPI extends CommonMapAPI {
     // API for managing the maptip
@@ -511,10 +512,9 @@ export class MapAPI extends CommonMapAPI {
             this.applyBasemap(bm);
 
             // When schema changes, the recreation of the view will also set the background colour.
-            this.esriView.set(
-                'background.color',
-                new Colour(bm.backgroundColour).toESRI()
-            );
+            this.esriView.background = new EsriColorBackground({
+                color: new Colour(bm.backgroundColour).toESRI()
+            });
 
             // fire the basemap change event
             this.$iApi.event.emit(GlobalEvents.MAP_BASEMAPCHANGE, {
